@@ -24,16 +24,38 @@ export default function ManageUsers() {
     password: "",
   });
 
-  const fetch = () => api.get<User[]>("/users/").then(r => setUsers(r.data));
+  const fetch = () =>
+    api.get<User[]>("/users/").then(r => setUsers(r.data));
   useEffect(() => {
     fetch();
   }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    await api.post("/users/", form);
-    setForm({ ...form, username: "" }); // reset partially
+    if (form.username) {
+      // Update existing user
+      const {password, ...rest } = form;
+      console.log("Submitting user:", rest, form.username);
+      await api.put(`/users/${form.username}/`, rest);
+    } else {
+      // Create new user
+      await api.post("/users/", form);
+    }
+    // Reset y refresh
+    setForm({ username: "", first_name: "", last_name: "", email: "", role: "student", password: "" });
     fetch();
+  };
+
+  const handleEdit = (u: User) => {
+    setForm({
+      username: u.username,
+      first_name: u.first_name,
+      last_name: u.last_name,
+      email: u.email,
+      role: u.role,
+      // do not include password in edit
+      password: ""
+    });
   };
 
   return (
@@ -45,48 +67,74 @@ export default function ManageUsers() {
           <Input
             placeholder="Username"
             value={form.username}
-            onChange={e => setForm(s => ({ ...s, username: e.target.value }))}
+            onChange={(e) =>
+              setForm((s) => ({ ...s, username: e.target.value }))
+            }
             required
           />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={e => setForm(s => ({ ...s, password: e.target.value }))}
-            required
-          />
+          {!form.username && (
+            <Input
+              type="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, password: e.target.value }))
+              }
+              required
+            />
+          )}
           <Input
             placeholder="First Name"
             value={form.first_name}
-            onChange={e => setForm(s => ({ ...s, first_name: e.target.value }))}
+            onChange={(e) =>
+              setForm((s) => ({ ...s, first_name: e.target.value }))
+            }
           />
           <Input
             placeholder="Last Name"
             value={form.last_name}
-            onChange={e => setForm(s => ({ ...s, last_name: e.target.value }))}
+            onChange={(e) =>
+              setForm((s) => ({ ...s, last_name: e.target.value }))
+            }
           />
           <Input
             type="email"
             placeholder="Email"
             value={form.email}
-            onChange={e => setForm(s => ({ ...s, email: e.target.value }))}
+            onChange={(e) =>
+              setForm((s) => ({ ...s, email: e.target.value }))
+            }
           />
           <select
             className="border rounded px-3 py-2"
             value={form.role}
-            onChange={e => setForm(s => ({ ...s, role: e.target.value as any }))}
+            onChange={(e) =>
+              setForm((s) => ({ ...s, role: e.target.value as any }))
+            }
           >
             <option value="student">Student</option>
             <option value="librarian">Librarian</option>
           </select>
         </div>
-        <Button type="submit">Add User</Button>
+        <Button type="submit">
+          {form.username ? "Update User" : "Add User"}
+        </Button>
       </form>
 
       <ul className="space-y-2">
-        {users.map(u => (
-          <li key={u.id} className="p-2 border rounded">
-            {u.username} — {u.email} ({u.role})
+        {users.map((u) => (
+          <li
+            key={u.username}
+            className="p-2 border rounded flex justify-between items-center"
+          >
+            <div>
+              {u.username} — {u.email} ({u.role})
+            </div>
+            <div className="space-x-2">
+              <Button onClick={() => handleEdit(u)}>
+                Edit
+              </Button>
+            </div>
           </li>
         ))}
       </ul>
