@@ -84,3 +84,9 @@ frontend/
 * **Books**: List, search, filter by title/author/genre, view details, checkout
 * **Student**: View my checkouts
 * **Librarian**: Manage users & books, view and mark returns
+
+
+## 🔗 Related Projects
+
+- **API (Backend)**: https://github.com/AlejandroVelasco/my-u-library-backend  
+- **Live Demo (Frontend)**: https://musical-daffodil-271a3e.netlify.app/login
