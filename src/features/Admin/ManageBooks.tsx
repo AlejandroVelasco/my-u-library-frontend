@@ -1,4 +1,5 @@
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect } from "react";
+import type { FormEvent } from "react";
 import api from "../../api";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
