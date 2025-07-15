@@ -89,4 +89,4 @@ frontend/
 ## 🔗 Related Projects
 
 - **API (Backend)**: https://github.com/AlejandroVelasco/my-u-library-backend  
-- **Live Demo (Frontend)**: https://musical-daffodil-271a3e.netlify.app/login
+- **Live Demo (Frontend)**: https://musical-daffodil-271a3e.netlify.app
